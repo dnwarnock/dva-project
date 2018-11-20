@@ -3,6 +3,7 @@ This package consists of three parts:
 - mongo database
 - backend web application
 - frontend web application
+
 The backend application acts as an API for serving data from mongo to a frontend application users can interact with.
 
 
@@ -13,7 +14,7 @@ The backend application acts as an API for serving data from mongo to a frontend
 - Build the backend with `cd backend && docker build -t dva-backend:local . && cd ..`
 - Build the frontend with `cd frontend && docker build -t dva-frontend:local . && cd ..`
 - [Get an API Key for Google Maps](https://developers.google.com/maps/documentation/javascript/get-api-key)
-- Copy and paste your API Key on to line 12 of `frontend/src/main.js`
+- Copy and paste your API Key on to line 12 of `frontend/src/main.js` in the value slot for the `key`
 - seed mongo by running `setup.sh`
 
 
