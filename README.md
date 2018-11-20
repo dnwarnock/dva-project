@@ -14,6 +14,7 @@ The backend application acts as an API for serving data from mongo to a frontend
 - Build the frontend with `cd frontend && docker build -t dva-frontend:local . && cd ..`
 - [Get an API Key for Google Maps](https://developers.google.com/maps/documentation/javascript/get-api-key)
 - Copy and paste your API Key on to line 12 of `frontend/src/main.js`
+- seed mongo by running `setup.sh`
 
 
 ## Execution

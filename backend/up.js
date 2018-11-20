@@ -66,4 +66,5 @@ async function up() {
 
 up().then(function(res){
   console.log('done');
+  process.exit(0);
 })
