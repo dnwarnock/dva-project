@@ -15,7 +15,32 @@ import boto3
 import numpy as np
 import pandas as pd
 from functools import reduce
+from collections import defaultdict
 
+
+def collect_adj_zips():
+    s3 = boto3.resource('s3', region_name = 'us-west-2')
+    bucket = s3.Bucket('dva-gatech-atx')
+    bucket.download_file('adjacent_zips.csv', 'data/adjacent_zips.csv')
+
+    # kind of hacky, but this file was made manually, so want to reformat
+    zip_pairs = []
+    with open("data/adjacent_zips.csv", 'r') as f:
+        for row in f:
+            row = row.replace("\n", "")
+            zip_pairs.append(row.split(","))
+
+    zip_map = defaultdict(set)
+    for pair in zip_pairs:
+        zip_map[int(pair[0])].add(int(pair[1]))
+        zip_map[int(pair[1])].add(int(pair[0]))
+
+    # sets are json serializeable
+    for k, v in zip_map.items():
+        zip_map[k] = list(v)
+
+    with open("data/adjacent_zips.json", 'w') as f:
+        json.dump(zip_map, f)
 
 def collect_tcad():
     """Pulls required tcad files from S3 and stores them locally"""
@@ -269,21 +294,57 @@ def make_feature_matrix():
 
     feature_matrix.to_csv("data/combined_feature_matrix.csv", index=False)
 
+def make_input_feature_matrix():
+    """ this function reads the output of make_feature_matrix() prepares it for input to scoring"""
+    dtype_map = {
+        'prop_id': np.object,
+        'Address': np.object,
+        'City': np.object,
+        'State': np.object,
+        'Lat': np.object,
+        'Long': np.object,
+        'geo_id': np.object
+    }
+    df = pd.read_csv("data/combined_feature_matrix.csv", dtype=dtype_map)
+
+    cols = list(df.columns)
+
+    # categorical
+    categorical_features = []
+    for col in cols:
+        if col[0:3] == 'is_' or col[0:4] == 'has_':
+            categorical_features.append(col)
+            df[col] = df[col].fillna(value=0).astype(int).astype(str)
+
+    # continuous
+    continuous_features = []
+    for col in cols:
+        if col[0:3] != 'is_' and col[0:4] != 'has_' and df[col].dtype == 'float64' and col != 'zillow':
+            continuous_features.append(col)
+
+    df['hamming'] = df[categorical_features].apply(lambda x: ''.join(x), axis=1)
+
+    base_fields = ['prop_id', 'situs_zip',  'zillow', 'Lat', 'Long', 'hood_cd', 'hamming']
+
+    features = df[base_fields + continuous_features]
+    features.to_csv("data/input_feature_matrix.csv", index=False)
 
 if __name__ == '__main__':
     if not os.path.isdir('data'):
         os.mkdir('data')
 
     function = sys.argv[1]
+    if function == 'zips' or function == 'all':
+        collect_adj_zips()
     if function == 'tcad' or function == 'all':
-        # collect_tcad()
+        collect_tcad()
         make_tcad_historical()
         make_tcad_features()
     if function == 'zillow' or function == 'all':
-        # collect_zillow()
+        collect_zillow()
         make_zillow_features()
     if function == 'googlemaps' or function == 'all':
-        # collect_googlemaps()
-        pass
+        collect_googlemaps()
     if function == 'feature_matrix' or function == 'all':
         make_feature_matrix()
+        make_input_feature_matrix()
