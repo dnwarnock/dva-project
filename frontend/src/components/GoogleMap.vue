@@ -89,7 +89,7 @@ export default {
           let cnt = 1;
           for(let i = 0; i < response.data.length; i++) {
             this.markers.push({
-              position: response.data[i].coordinates,
+              position: {lat: parseFloat(response.data[i].Lat), lng: parseFloat(response.data[i].Long)},
               title: response.data[i].address,
               label: `${i + 1}`
             });

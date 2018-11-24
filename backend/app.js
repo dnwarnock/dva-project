@@ -28,10 +28,18 @@ const init = async () => {
 
   server.route({
     method: 'GET',
-    path: '/',
-    handler: (request, h) => {
+    path: '/property/{id}/id',
+    async handler(request, reply) {
 
-        return 'Hello, world!';
+      const db = request.mongo.db;
+
+      try {
+        const result = await db.collection('properties').findOne({  _id: request.params.id});
+        return result;
+      }
+      catch (err) {
+        throw Boom.internal('Internal MongoDB error', err);
+      }
     }
   });
 
@@ -41,10 +49,9 @@ const init = async () => {
     async handler(request, reply) {
 
         const db = request.mongo.db;
-        const ObjectID = request.mongo.ObjectID;
 
         try {
-            const result = await db.collection('properties').findOne({  address: request.params.address });
+            const result = await db.collection('properties').findOne({  address: request.params.address.toUpperCase() });
             return result;
         }
         catch (err) {
@@ -74,14 +81,14 @@ const init = async () => {
   server.route( {
     method: 'GET',
     path: '/properties',
-    async handler(request) {
+    async handler(request, reply) {
 
         const db = request.mongo.db;
 
         try {
-            let findResult = await db.collection('properties').find({ "_id": { $in: request.query.ids } });
-            let result = await findResult.toArray();
-            return result;
+          let findResult = await db.collection('properties').find({ "_id": { $in: request.query.ids } });
+          let result = await findResult.toArray();
+          return result;
         }
         catch (err) {
             throw Boom.internal('Internal MongoDB error', err);
@@ -90,7 +97,7 @@ const init = async () => {
     options: {
       validate: {
         query: {
-            ids: Joi.array().items(Joi.number().integer().options({convert: true}))
+            ids: Joi.array().items(Joi.string().options({convert: true}))
         }
       }
     }

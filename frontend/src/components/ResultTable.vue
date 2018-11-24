@@ -12,8 +12,12 @@
       <md-table-row slot="md-table-row" slot-scope="{ item }">
         <md-table-cell md-label="id" md-sort-by="id">{{ item._id }}</md-table-cell>
         <md-table-cell md-label="address" md-sort-by="address">{{ item.address }}</md-table-cell>
-        <md-table-cell md-label="sqft" md-sort-by="sqft" md-numeric>{{ item.sqft }}</md-table-cell>
-        <md-table-cell md-label="appraisal" md-sort-by="appraisal" md-numeric>{{ item.appraisal }}</md-table-cell>
+        <md-table-cell md-label="2018 appraisal" md-sort-by="appraisal_2018" md-numeric>{{ item.appraisal_2018 }}</md-table-cell>
+        <md-table-cell md-label="2017 appraisal" md-sort-by="appraisal_2017" md-numeric>{{ item.appraisal_2017 }}</md-table-cell>
+        <md-table-cell md-label="2016 appraisal" md-sort-by="appraisal_2016" md-numeric>{{ item.appraisal_2016 }}</md-table-cell>
+        <md-table-cell md-label="2015 appraisal" md-sort-by="appraisal_2015" md-numeric>{{ item.appraisal_2016 }}</md-table-cell>
+        <md-table-cell md-label="building sqft" md-sort-by="building_sqft" md-numeric>{{ item.building_sqft }}</md-table-cell>
+        <md-table-cell md-label="land sqft" md-sort-by="land_sqft" md-numeric>{{ item.land_sqft }}</md-table-cell>
       </md-table-row>
     </md-table>
   </div>

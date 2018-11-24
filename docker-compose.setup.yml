@@ -10,7 +10,7 @@ services:
   backend:
     image: dva-backend:local
     volumes:
-      - ./backend:/app
+      - ${PWD}/application_data.json:/app/application_data.json
     ports:
       - '3000:3000'
     tty: true
