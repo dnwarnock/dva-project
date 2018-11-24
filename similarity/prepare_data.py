@@ -18,6 +18,11 @@ from functools import reduce
 from collections import defaultdict
 
 
+def dedupe(df, pk):
+    orig_cols = list(df.columns)
+    df['row_num'] = df.groupby(pk).cumcount()+1
+    return df[df['row_num'] == 1][orig_cols]
+
 def collect_adj_zips():
     s3 = boto3.resource('s3', region_name = 'us-west-2')
     bucket = s3.Bucket('dva-gatech-atx')
@@ -283,9 +288,9 @@ def make_zillow_features():
     df.to_csv("data/zillow/zillow_features.csv", index=False)
 
 def make_feature_matrix():
-    maps = pd.read_csv("data/googlemaps/GeoData.csv")  # use maps data as "left" table since filtered already
-    tcad = pd.read_csv("data/tcad/tcad_features.csv")
-    zillow = pd.read_csv("data/zillow/zillow_features.csv")
+    maps = dedupe(pd.read_csv("data/googlemaps/GeoData.csv"), 'prop_id')  # use maps data as "left" table since filtered already
+    tcad = dedupe(pd.read_csv("data/tcad/tcad_features.csv"), 'prop_id')
+    zillow = dedupe(pd.read_csv("data/zillow/zillow_features.csv"), 'prop_id')
 
     dfs = [maps, tcad, zillow]
     feature_matrix = reduce(lambda left,right: pd.merge(left, right, on='prop_id', how='left'), dfs)
