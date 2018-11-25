@@ -1,0 +1,28 @@
+version: '3'
+
+services:
+  mongo:
+    image: mongo:3.2-jessie
+    volumes:
+      - ./backend/mongo:/data/db
+      - /app/node_modules/
+    ports:
+      - '27017:27017'
+  backend:
+    image: dva-backend:local
+    volumes:
+      - ./backend:/app
+      - /app/node_modules/
+    ports:
+      - '3000:3000'
+    tty: true
+    command: ["sh", "./wait-for-it.sh", "mongo:27017", "--", "node", "app.js"]
+  frontend:
+    image: dva-frontend:local
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules/
+    ports:
+      - '8080:8080'
+    tty: true
+    command: ["npm", "run", "dev"]
