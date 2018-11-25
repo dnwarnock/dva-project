@@ -68,9 +68,9 @@ const init = async () => {
         const db = request.mongo.db;
 
         try {
-            let findResult = await db.collection('properties').find({ address: new RegExp(request.params.address)});
+            let findResult = await db.collection('properties').find({ address: new RegExp(request.params.address.toUpperCase())});
             let result = await findResult.toArray();
-            return {items: result};
+            return {items: result.splice(0,20)};
         }
         catch (err) {
             throw Boom.internal('Internal MongoDB error', err);
