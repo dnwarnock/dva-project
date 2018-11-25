@@ -28,10 +28,17 @@ def make_df(metric_type):
                 continue
             print("processing file {}/{}".format(metric_type, file))
             df = pd.read_csv("{}/{}".format(metric_type, file))
+            if metric_type == 'lsh':
+                df = df[df['sim_rank'] <= 20]
             dfs.append(df)
 
     df = pd.concat(dfs)
-    del df['metric']
+
+    if metric_type == 'lsh':
+        del df['sim_metric']
+    else:
+        del df['metric']
+
     # convert distance to similarity & normalize
     df['sim_score'] = df['sim_score'].max() - df['sim_score']
     scaler = preprocessing.MinMaxScaler()
