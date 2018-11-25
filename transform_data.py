@@ -34,21 +34,23 @@ if __name__ == '__main__':
   str_keys = {'address', 'City', 'State', 'imprv_state_cd', 'land_state_cd', 'state_cd', 'ptd_state_cd_description', 'hood_cd', 'situs_num'}
 
   for index, row in tqdm(merge.iterrows(), total=merge.shape[0]):
-    try:
-      item = merge.iloc[index].to_dict()
-    except:
-      print(index)
-      continue
+    item = merge.iloc[index].to_dict()
     for key, value in item.items():
       if(key in str_keys):
         item[key] = str(value).upper()
       elif(key == 'Lat' or key == 'Long'):
-        item[key] = float(value)
+        try:
+          item[key] = float(value)
+        except:
+          item[key] = 30.2672
       else:
         try:
           item[key] = int(value)
         except:
-          item[key] = float(value)
+          try:
+            item[key] = float(value)
+          except:
+            item[key] = str(value)
 
     item['address'] = item['address'].upper()
     
