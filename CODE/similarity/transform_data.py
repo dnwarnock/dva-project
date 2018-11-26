@@ -25,7 +25,8 @@ def main(historical_file, similarities_file, features_file, output_file):
   historical.rename(columns={"2015": 'appraisal_2015', "2016": 'appraisal_2016', "2017": 'appraisal_2017'}, inplace=True)
   similarities = flatten(similarities_file, '_id', 'sim_rank', 'sim_prop')
   features = pd.read_csv(features_file)
-  features.rename(columns={'search_prop': '_id', 'prop_id': '_id', 'prop_val_yr': 'year', 'appraised_val': 'appraisal'}, inplace=True)
+  for col in features.columns:
+    features[col].fillna(" ", inplace = True)
   features = features.drop_duplicates(subset=['_id'], keep='first')
   merge = pd.merge(features, historical, on='_id', how='left', validate='one_to_one')
 
@@ -44,22 +45,20 @@ def main(historical_file, similarities_file, features_file, output_file):
         try:
           item[key] = float(value)
         except:
+          # handle bad lat values
           item[key] = 30.2672
       else:
         try:
           item[key] = int(value)
         except:
-          try:
-            item[key] = float(value)
-          except:
-            item[key] = str(value)
+          item[key] = 0
 
     item['address'] = item['address'].upper()
 
     try:
       similar = similarities.loc[similarities['_id'] == row['_id']].to_dict(orient='records')[0]
       similar.pop('_id')
-      item['similar'] = [ int(val) for val in similar.values()]
+      item['similar'] = [ {'_id': int(v) 'rank': k} for k,v in similar.items()]
     except:
       item['similar'] = []
     output.append(item)
