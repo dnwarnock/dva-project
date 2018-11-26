@@ -1,6 +1,6 @@
 <template>
   <div><br/>
-    <md-table v-model="properties" md-sort="name" md-sort-order="asc" md-card md-fixed-header>
+    <md-table v-model="properties" md-sort="name" md-sort-order="asc" md-card>
       <md-table-toolbar>
         <h2 class="md-title">Results</h2>
         <vue-json-to-csv :json-data="properties" csv-title="search_results.csv">

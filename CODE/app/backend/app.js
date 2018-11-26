@@ -94,6 +94,13 @@ const init = async () => {
             throw Boom.internal('Internal MongoDB error', err);
         }
     },
+    options: {
+      validate: {
+        query: {
+            ids: Joi.array().items(Joi.number().options({convert: true}))
+        }
+      }
+    }
   });
 
   await server.start();
