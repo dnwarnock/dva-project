@@ -8,7 +8,7 @@
         </vue-json-to-csv>
       </md-table-toolbar>
       <md-table-row slot="md-table-row" slot-scope="{ item }">
-        <md-table-cell md-label="id" md-sort-by="_id" md-numeric>{{ item._id }}</md-table-cell>
+        <md-table-cell md-label="rank" md-sort-by="_id" md-numeric>{{ item._id }}</md-table-cell>
         <md-table-cell md-label="address" md-sort-by="address">{{ item.address }}</md-table-cell>
         <md-table-cell md-label="2018" md-sort-by="appraised_val" md-numeric>{{ item.appraised_val }}</md-table-cell>
         <md-table-cell md-label="2017" md-sort-by="appraisal_2017" md-numeric>{{ item.appraisal_2017 }}</md-table-cell>
