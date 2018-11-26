@@ -80,20 +80,26 @@ export default {
     },
     handleSearch(result) {
       this.markers = [];
-      
+      let ids = result.selectedObject.similar.map(sim => sim._id)
       let query = queryString.stringify(
-        {ids: result.selectedObject.similar.concat([result.selectedObject._id])}
+        {ids: ids.concat([result.selectedObject._id])}
       );
       axios.get(`http://${this.host}/properties?${query}`)
         .then(response => {
-          let cnt = 1;
+          console.log(result.selectedObject.similar);
           for(let i = 0; i < response.data.length; i++) {
+            let label = result.selectedObject.similar.find(function(rank){
+              return response.data[i]._id === rank._id;
+            });
+            if(!label){
+              label = {rank: 0}
+            }
+            response.data[i]._id = label.rank;
             this.markers.push({
               position: {lat: parseFloat(response.data[i].Lat), lng: parseFloat(response.data[i].Long)},
               title: response.data[i].address,
-              label: `${i + 1}`
+              label: label.rank.toString()
             });
-            response.data[i]._id = i + 1;
           }
           this.$store.commit('setProperties', response.data);
         })
