@@ -125,13 +125,8 @@ def main(addresses, output_path, processed_addresses_path, flush_threshold=5):
         except:
             pass
 
-        # price_history_table = driver.find_element_by_class_name("zsg-table")
-        # table parsing here
-
-        # fact_labels = driver.find_elements_by_class_name("fact-label")
         fact_values = driver.find_elements_by_class_name("fact-value")
 
-        # for i in range(min(len(fact_labels), len(fact_values))):
         for i in range(len(fact_values)):
             label = fact_values[i].find_element_by_xpath("..")
             child_text = fact_values[i].text
@@ -139,9 +134,7 @@ def main(addresses, output_path, processed_addresses_path, flush_threshold=5):
             if parent_text == '':
                 continue
             data[parent_text.lower()].append(child_text.lower())
-            # header_set.add(parent_text.lower())
 
-        # cateory_labels = driver.find_elements_by_class_name("category-name")
         cateory_values = driver.find_elements_by_class_name("category-facts")
         for i in range(len(cateory_values)):
             label = cateory_values[i].find_element_by_xpath("..")
@@ -165,7 +158,6 @@ if __name__ == '__main__':
     file_name = sys.argv[1]  # local file of addresses
     output_path = sys.argv[2]  # s3 path to where the files go
     processed_addresses_path = sys.argv[3]
-    # addresses = [(1, "5204 Andover Pl. Austin, TX 78723"), (2, "5202 Andover Pl. Austin, TX 78723"), (3, "5206 Andover Pl. Austin, TX 78723")]
     addresses = prepare_input_file(file_name)
 
     retry_ct = 10

@@ -11,7 +11,7 @@ yarn-error.log
 *.njsproj
 *.sln
 
-backend/mongo
+CODE/app/backend/mongo/*
 
 
 config.ini
