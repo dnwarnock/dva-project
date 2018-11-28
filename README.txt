@@ -3,6 +3,8 @@ This project contains all of the code necessary to repeat Team 33's housing simi
 
 Additional resources not checked in such as the data acquired from the Travis County Appraisal District (TCAD) are available in a public bucket in S3 (s3://dva-gatech-atx/), which is available in the `us-west-2` region. These resources should be available through 2018, but might be removed at some point in the future to minimize personal hosting costs.
 
+A hosted version of this application using the Euclidean distance metric is available at http://54.84.229.60:8080/ and will be hosted through the completion of the Fall 2018 term.
+
 # googlemaps_scrape
 ## Description
 This module contains a script that is used to pull coordinates of addresses from the TCAD data and store the results in S3. Note that google maps API is free up to a limited number of API requests. For more information, read here: https://cloud.google.com/maps-platform/pricing/.
